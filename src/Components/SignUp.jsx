@@ -33,10 +33,14 @@ const SignUp = () => {
             );
             return; // Stop registration process if password is invalid
         }
-        console.log(emailRegex.test(email));
+
         const data = { name, email, password };
 
         console.log(data);
+        toast.success("Sign up is successful");
+        nameRef.current.value = "";
+        emailRef.current.value = "";
+        passwordRef.current.value = "";
     };
 
     return (
