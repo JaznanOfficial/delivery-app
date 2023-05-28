@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRef } from "react";
 import { Input, Ripple, initTE } from "tw-elements";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 initTE({ Input, Ripple });
 
@@ -15,32 +16,34 @@ const SignUp = () => {
         setShow(!show);
     };
 
-    const registrationHandler = () => {
+    const registrationHandler = async () => {
         const name = nameRef.current.value;
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        const passwordRegex =
-            /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{}[\]|:;,<.>/?]).{8,}$/;
-        if (!emailRegex.test(email)) {
-            toast.error("Invalid email.please provide a valid email");
-            return;
-        }
-
-        if (!passwordRegex.test(password)) {
-            toast.error(
-                "Password must contain at least 8 characters, including at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 symbol"
-            );
-            return; // Stop registration process if password is invalid
-        }
 
         const data = { name, email, password };
 
         console.log(data);
-        toast.success("Sign up is successful");
-        nameRef.current.value = "";
-        emailRef.current.value = "";
-        passwordRef.current.value = "";
+        try {
+            const res = await axios.post(
+                "https://register-task-server.cyclic.app/api/v1/users",
+                data
+            );
+            console.log(res);
+            if (res.data.error) {
+                toast.error(res.data.error);
+                return;
+            }
+            toast.success(res.data.message);
+        } catch (err) {
+            // console.log(err.data.keyPattern);
+            toast.error(err.message);
+        }
+
+        // toast.success("Sign up is successful");
+        // nameRef.current.value = "";
+        // emailRef.current.value = "";
+        // passwordRef.current.value = "";
     };
 
     return (
