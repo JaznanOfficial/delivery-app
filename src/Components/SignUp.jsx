@@ -11,12 +11,15 @@ const SignUp = () => {
     const nameRef = useRef();
     const emailRef = useRef();
     const passwordRef = useRef();
+    const [loading, setLoading] = useState(false);
 
     const showHandler = () => {
         setShow(!show);
     };
 
-    const registrationHandler = async () => {
+    const registrationHandler = async (e) => {
+        e.preventDefault()
+        setLoading(true);
         const name = nameRef.current.value;
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
@@ -30,20 +33,20 @@ const SignUp = () => {
                 data
             );
             console.log(res);
+            setLoading(false);
             if (res.data.error) {
                 toast.error(res.data.error);
                 return;
             }
             toast.success(res.data.message);
+            toast.success("Sign up is successful");
+            nameRef.current.value = "";
+            emailRef.current.value = "";
+            passwordRef.current.value = "";
         } catch (err) {
             // console.log(err.data.keyPattern);
             toast.error(err.message);
         }
-
-        // toast.success("Sign up is successful");
-        // nameRef.current.value = "";
-        // emailRef.current.value = "";
-        // passwordRef.current.value = "";
     };
 
     return (
@@ -60,14 +63,18 @@ const SignUp = () => {
                         </div>
                         <div className="bg-grey-lighter flex flex-col mb-12 md:mb-0 md:w-8/12 lg:w-6/12 justify-center items-start">
                             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
-                                <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+                                <form
+                                    className="bg-white px-6 py-8 rounded shadow-md text-black w-full"
+                                    onSubmit={registrationHandler}
+                                >
                                     <h1 className="mb-8 text-3xl text-center">Sign up</h1>
                                     <input
                                         ref={nameRef}
                                         type="text"
                                         className="block border border-grey-light w-full p-3 rounded mb-4"
-                                        name="fullname"
+                                        name="fullName"
                                         placeholder="Full Name"
+                                        required
                                     />
 
                                     <input
@@ -76,6 +83,7 @@ const SignUp = () => {
                                         className="block border border-grey-light w-full p-3 rounded mb-4"
                                         name="email"
                                         placeholder="Email"
+                                        required
                                     />
                                     <div className="relative">
                                         <input
@@ -84,6 +92,7 @@ const SignUp = () => {
                                             className="block border border-grey-light w-full p-3 rounded mb-4"
                                             name="password"
                                             placeholder="Password"
+                                            required
                                         />
                                         {show ? (
                                             <i
@@ -99,13 +108,18 @@ const SignUp = () => {
                                     </div>
 
                                     <button
-                                        onClick={registrationHandler}
                                         type="submit"
                                         className="w-full text-center py-3 rounded bg-blue-600 text-white hover:bg-green-dark focus:outline-none my-1"
                                     >
-                                        Create Account
+                                        {!loading ? (
+                                            "Create Account"
+                                        ) : (
+                                            <span>
+                                            <div className="w-6 h-6 mx-auto border-4 border-dashed rounded-full animate-spin dark:border-violet-400"></div>
+                                            </span>
+                                        )}
                                     </button>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
