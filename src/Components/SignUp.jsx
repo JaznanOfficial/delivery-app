@@ -29,7 +29,7 @@ const SignUp = () => {
         console.log(data);
         try {
             const res = await axios.post(
-                "https://register-task-server.cyclic.app/api/v1/users",
+                "https://register-task-server-production.up.railway.app/api/v1/users",
                 data
             );
             console.log(res);
